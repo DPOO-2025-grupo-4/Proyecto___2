@@ -16,7 +16,8 @@ public class PaqueteDeluxe extends TiqueteMultiple {
     public PaqueteDeluxe(Evento eventoReferencia, List<TiqueteIndividual> tiquetes,Usuario comprador,String descripcionBeneficios) {
         super(eventoReferencia, tiquetes, comprador);
         this.descripcionBeneficios = descripcionBeneficios;
-        this.transferible = false; // los Deluxe no se pueden transferir
+        this.transferible = false; 
+        this.tiquetesIncluidos = tiquetes;
     }
 
     public String getDescripcionBeneficios() {

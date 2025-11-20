@@ -13,7 +13,6 @@ import com.google.gson.GsonBuilder;
 import Eventos.Evento;
 import Usuarios.Promotor;
 import tiquetes.PaqueteDeluxe;
-import tiquetes.PaseTemporada;
 import tiquetes.Tiquete;
 import tiquetes.TiqueteIndividual;
 import tiquetes.TiqueteMultiple;
@@ -57,7 +56,6 @@ public class RepositorioEventos{
 	                .of(Tiquete.class, "type")
 	                .registerSubtype(TiqueteIndividual.class, "individual")
 	                .registerSubtype(TiqueteMultiple.class, "multiple")
-	                .registerSubtype(PaseTemporada.class, "temporada")
 	                .registerSubtype(PaqueteDeluxe.class, "paqueteDeluxe");
 
 	        Gson gson = new GsonBuilder()
@@ -80,7 +78,6 @@ public class RepositorioEventos{
 	                .of(Tiquete.class, "type")
 	                .registerSubtype(TiqueteIndividual.class, "individual")
 	                .registerSubtype(TiqueteMultiple.class, "multiple")
-	                .registerSubtype(PaseTemporada.class, "temporada")
 	                .registerSubtype(PaqueteDeluxe.class, "paqueteDeluxe");
 
 	        Gson gson = new GsonBuilder()

@@ -207,10 +207,6 @@ public class OfertaReventa {
                 " del tiquete " + tiquete.getId()
         );
     }
-    /**
-     * El vendedor acepta la contraoferta actual.
-     * Se ejecuta la venta usando el precio propuesto.
-     */
     public void aceptarContraoferta() {
         if (!estaActiva()) {
             throw new IllegalStateException("La oferta no está activa");
@@ -230,16 +226,11 @@ public class OfertaReventa {
                 " en oferta " + id
         );
 
-        // Ejecutamos la venta con el comprador proponente
         ejecutarVenta(compradorProponente);
 
-        // No es estrictamente necesario limpiar, porque la oferta queda VENDIDA
         compradorProponente = null;
         precioPropuesto = null;
     }
-    /**
-     * El vendedor rechaza la contraoferta actual.
-     */
     public void rechazarContraoferta() {
         if (compradorProponente == null || precioPropuesto == null) {
             throw new IllegalStateException("No hay contraoferta por rechazar");

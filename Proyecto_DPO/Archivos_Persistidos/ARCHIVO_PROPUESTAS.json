@@ -1,4 +1,18 @@
 {
-  "promotoresPropuestos": {},
+  "promotoresPropuestos": {
+    "5": {
+      "reputacion": 0,
+      "nit": "11111",
+      "tiquetes": [],
+      "id": 5,
+      "nombre": "m",
+      "email": "a@mail.com",
+      "login": "m",
+      "password": "z",
+      "saldo": 0.0,
+      "fechaRegistro": "2025-11-19T22:22:35.903939200",
+      "rol": "PROMOTOR"
+    }
+  },
   "eventoPropuestasCancelacion": {}
 }

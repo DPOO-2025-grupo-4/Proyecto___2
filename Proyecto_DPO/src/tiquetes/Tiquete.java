@@ -1,31 +1,24 @@
 package tiquetes;
+
 import Eventos.Evento;
 import Usuarios.Usuario;
+import Usuarios.Cliente;
 
 public abstract class Tiquete {
 
     protected String id;
-    protected transient Evento evento;
-    protected double precioBase;
-    protected double porcentajeServicio;
-    protected double cobroEmision;
-    protected transient Usuario duenoActual;
+    protected Evento evento;
+    protected Usuario duenoActual;
     protected boolean transferible = true;
-    private String asiento; 
-    private int descuento = 0;
-    private double precioTotal;
-    public Tiquete() {}
+    protected boolean reembolsado = false;
+    protected double descuentoPorcentaje = 0;
+    protected double precioFijo = -1;
+
+    // 👉 Asiento opcional
+    protected String asiento = null;
+
     public String getId() {
         return id;
-    }
-    public String getAsiento() {
-        return asiento;
-    }
-    public void setAsiento(String asiento) {
-    	this.asiento = asiento;
-    }
-    public void setComprador (Usuario comprador) {
-    	duenoActual = comprador;
     }
 
     public Evento getEvento() {
@@ -36,41 +29,48 @@ public abstract class Tiquete {
         return duenoActual;
     }
 
-    public void setDuenoActual(Usuario duenoActual) {
-        this.duenoActual = duenoActual;
-    }
-
-    public double getPrecioBase() {
-        return precioBase;
-    }
-
-    public double getPorcentajeServicio() {
-        return porcentajeServicio;
-    }
-
-    public double getCobroEmision() {
-        return cobroEmision;
-    }
-
-    public double getPrecioTotal() {
-    	return precioTotal;
-    }
-    public void setPrecioTotal() {
-        double recargoServicio = (precioBase * porcentajeServicio) / 100;
-        double subtotal = precioBase + recargoServicio + cobroEmision;
-
-        if (descuento > 0) {
-            subtotal = subtotal * (1 - descuento / 100.0);
-        }
-
-        this.precioTotal = subtotal;
-    }
-    public void setDescuento(int descuento)
-    {
-    	this.descuento = descuento;
+    public void setDuenoActual(Usuario usuario) {
+        this.duenoActual = usuario;
     }
 
     public boolean esTransferible() {
         return transferible;
+    }
+
+    public boolean fueReembolsado() {
+        return reembolsado;
+    }
+
+    public String getAsiento() {
+        return asiento;
+    }
+
+    public void setAsiento(String asiento) {
+        this.asiento = asiento;
+    }
+    public void setDescuento(double porcentaje) {
+        if (porcentaje < 0) porcentaje = 0;
+        if (porcentaje > 100) porcentaje = 100;
+        this.descuentoPorcentaje = porcentaje;
+        this.precioFijo = -1; 
+    }
+    public void setPrecioTotal(double precio) {
+        if (precio < 0) return;
+        this.precioFijo = precio;
+        this.descuentoPorcentaje = 0; 
+    }
+
+    public abstract double getPrecioTotal();
+
+    public void reembolsar() {
+        if (reembolsado) return;
+
+        if (duenoActual instanceof Cliente cliente) {
+            double monto = getPrecioTotal();
+            cliente.acreditarSaldo(monto);
+            cliente.getTiquet().remove(this);
+        }
+        duenoActual = null;
+        reembolsado = true;
     }
 }

@@ -1,21 +1,22 @@
 package tiquetes;
 
-
 import java.util.List;
 
+import Eventos.Evento;
 import Usuarios.Usuario;
 
 public class PaqueteDeluxe extends TiqueteMultiple {
 
     private String descripcionBeneficios;
-
     public PaqueteDeluxe() {
-    	super();
+        super();
     }
-    public PaqueteDeluxe(List<TiqueteIndividual> tiquetes,double precioBasePaquete,double porcentajeServicio,double cobroEmision, String descripcionBeneficios) {
-        super(tiquetes, precioBasePaquete, porcentajeServicio, cobroEmision);
+
+
+    public PaqueteDeluxe(Evento eventoReferencia, List<TiqueteIndividual> tiquetes,Usuario comprador,String descripcionBeneficios) {
+        super(eventoReferencia, tiquetes, comprador);
         this.descripcionBeneficios = descripcionBeneficios;
-        this.transferible = false;
+        this.transferible = false; // los Deluxe no se pueden transferir
     }
 
     public String getDescripcionBeneficios() {

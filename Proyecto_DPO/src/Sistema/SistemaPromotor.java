@@ -176,69 +176,107 @@ public class SistemaPromotor extends SubSistema {
 	}
 
 	private void crearPaqueteDeluxe() {
-		boolean datosCorrectos = false;
-		do {
-			List<Evento> lista = repe.getEventosXPromotor(usuario.getLogin());
-    		for (Evento e : lista) {
-    			System.out.println("ID: " + e.getIdEvento()
-    			+ " | Tipo: " + e.getTipoEvento()
-    			+ " | Fecha: " + e.getFechaEvento()
-    			+ " | Capacidad: " + e.getCapacidadEvento()
-    			+ " | Venue Asociado" + e.getVenueAsociado().getNombreVenue());
-    		}
-    		System.out.print("Seleccione el evento, posteriormente seleccione la localidad en la que desea el paquete Deluxe");
-    		int idEvento = sc.nextInt();
-    		sc.nextLine();
-    		Evento evento = repe.getEventoActivo(idEvento);
-    		List<Localidad> lista2 = evento.getLocalidadesDisponibles();
-    		for(Localidad l: lista2) {
-    			System.out.println("ID: " + l.getIdLocalidad()
-    			+ " | Caracteristicas: " + l.getCaracteristicas()
-    			+ " | Capacidad: " + l.getCapacidad()
-    			+ " | Precio: " + l.getPrecio()
-    			+ " | Cantidad de tiquetes vendidos" + l.getVendidos());
-    		}
-    		System.out.print("Digite el ID de la localidad en la que crear el paquete Deluxe");
-    		int idLocalidad = sc.nextInt();
-    		sc.nextLine();
-    		Localidad localidad = evento.getLocalidadPorID(idLocalidad);
-			System.out.print("Se pediran 10 ID tiquete");
-			List<Tiquete> lista3 = localidad.getTiquetesDisponibles();
-			for(Tiquete t: lista3) {
-	    			System.out.println("ID: " + t.getId()
-	    			+ " | Precio Tiquete: " + t.getPrecioTotal());
-	    		}
-			List<TiqueteIndividual> nuevo = new ArrayList<TiqueteIndividual>();
-			for(int i = 0; i <10;) {
-	    		System.out.println("Ingrese un id de tiquete");
-	    		String id = sc.nextLine();
-	    		 //Sabemos que este tipo de logica no deberia ir aca pero por cuestion de tiempo se hizo asi
-	    		Tiquete tiquete = localidad.getTiqueteDisponible(id);
-	    		if (tiquete != null && nuevo.contains(tiquete) == false) {
-	    			nuevo.add((TiqueteIndividual) tiquete);
-	    			localidad.eliminarTiquete(id);
-	    			i++;
-	    		}
-	    		else {
-	    			System.out.println("Tiquete no existe o ya se añadio, intente nuevamente");
-	    		}
-			}
-			System.out.println("Ingrese el precio base del paquete");
-			double precio = sc.nextDouble();
-			sc.nextLine();
-			System.out.println("Ingrese los beneficios añadidos de este paquete:");
-			String beneficios = sc.nextLine();
-			Tiquete tiqueteM = new PaqueteDeluxe(nuevo, precio, evento.getPorcentajeServicio(),evento.getCobroEmision(), beneficios);
-			localidad.agregarTiquete(tiqueteM);
-			if(localidad.getTiqueteDisponible(tiqueteM.getId()) != null) {
-				datosCorrectos = true;
-			}
-			else {
-				System.out.println("No genere correctamente el paqueteDeluxe");
-			}
-		}while(datosCorrectos == false);
-		
+	    boolean datosCorrectos = false;
+
+	    do {
+	        List<Evento> lista = repe.getEventosXPromotor(usuario.getLogin());
+	        for (Evento e : lista) {
+	            System.out.println("ID: " + e.getIdEvento()
+	                    + " | Tipo: " + e.getTipoEvento()
+	                    + " | Fecha: " + e.getFechaEvento()
+	                    + " | Capacidad: " + e.getCapacidadEvento()
+	                    + " | Venue Asociado: " + e.getVenueAsociado().getNombreVenue());
+	        }
+
+	        System.out.print("Seleccione el ID del evento: ");
+	        int idEvento = sc.nextInt();
+	        sc.nextLine();
+
+	        Evento evento = repe.getEventoActivo(idEvento);
+	        if (evento == null) {
+	            System.out.println("Evento inválido.");
+	            continue;
+	        }
+
+	        List<Localidad> lista2 = evento.getLocalidadesDisponibles();
+	        for (Localidad l : lista2) {
+	            System.out.println("ID: " + l.getIdLocalidad()
+	                    + " | Características: " + l.getCaracteristicas()
+	                    + " | Capacidad: " + l.getCapacidad()
+	                    + " | Precio: " + l.getPrecio()
+	                    + " | Vendidos: " + l.getVendidos());
+	        }
+
+	        System.out.print("Digite el ID de la localidad en la que crear el paquete Deluxe: ");
+	        int idLocalidad = sc.nextInt();
+	        sc.nextLine();
+
+	        Localidad localidad = evento.getLocalidadPorID(idLocalidad);
+	        if (localidad == null) {
+	            System.out.println("Localidad inválida.");
+	            continue;
+	        }
+
+	        // 3. Mostrar tiquetes disponibles en la localidad
+	        System.out.println("Se pedirán 10 IDs de tiquete para el paquete.");
+	        List<Tiquete> lista3 = localidad.getTiquetesDisponibles();
+
+	        if (lista3.isEmpty()) {
+	            System.out.println("No hay tiquetes disponibles en esta localidad.");
+	            continue;
+	        }
+
+	        for (Tiquete t : lista3) {
+	            System.out.println("ID: " + t.getId()
+	                    + " | Precio Tiquete: " + t.getPrecioTotal());
+	        }
+
+	        List<TiqueteIndividual> listaTiquetes = new ArrayList<>();
+	        int i = 0;
+	        while (i < 10) {
+	            System.out.print("Ingrese un ID de tiquete: ");
+	            String id = sc.nextLine();
+
+	            // (Sí, esto debería estar en otra capa, pero por tiempo lo dejamos aquí)
+	            Tiquete tiquete = localidad.getTiqueteDisponible(id);
+
+	            if (tiquete instanceof TiqueteIndividual
+	                    && !listaTiquetes.contains(tiquete)) {
+
+	                listaTiquetes.add((TiqueteIndividual) tiquete);
+	                localidad.eliminarTiquete(id);  // lo sacamos de la lista de disponibles
+	                i++;
+
+	            } else {
+	                System.out.println("Tiquete no existe, ya se añadió o no es individual. Intente nuevamente.");
+	            }
+	        }
+
+	        // 5. Datos del paquete
+	        System.out.print("Ingrese el precio base del paquete: ");
+	        double precio = sc.nextDouble(); // por ahora no se usa en el constructor
+	        sc.nextLine();
+
+	        System.out.println("Ingrese los beneficios añadidos de este paquete:");
+	        String beneficios = sc.nextLine();
+
+	        // 6. Crear PaqueteDeluxe (por ahora sin comprador: null)
+	        PaqueteDeluxe tiqueteM =
+	                new PaqueteDeluxe(evento, listaTiquetes, null, beneficios);
+
+	        // Guardar el paquete como un tiquete disponible en la localidad
+	        localidad.agregarTiquete(tiqueteM);
+
+	        if (localidad.getTiqueteDisponible(tiqueteM.getId()) != null) {
+	            System.out.println("Paquete Deluxe creado correctamente.");
+	            datosCorrectos = true;
+	        } else {
+	            System.out.println("No se generó correctamente el Paquete Deluxe.");
+	        }
+
+	    } while (!datosCorrectos);
 	}
+
 	private void crearEvento() {
 		boolean datosCorrectos = false;
 		do {

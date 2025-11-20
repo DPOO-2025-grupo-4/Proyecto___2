@@ -11,6 +11,7 @@ import Usuarios.Administrador;
 import Usuarios.Promotor;
 import Usuarios.Usuario;
 import repositorios.GestorID;
+import repositorios.OfertaReventa;
 import repositorios.Propuestas;
 import repositorios.RepositorioEventos;
 import repositorios.RepositorioUsuarios;
@@ -48,6 +49,8 @@ public class SistemaAdministrador extends SubSistema {
             System.out.println("8. Aprobar cancelacion evento");
             System.out.println("9. Crear Venue");
             System.out.println("10. Rechazar Promotor");
+            System.out.println("11. Ver log del sistema");
+            System.out.println("12. Eliminar oferta de reventa");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             
@@ -73,8 +76,16 @@ public class SistemaAdministrador extends SubSistema {
                 break;
                 case 9: crearVenue(); //Probado
                 break;
-                case 10: rechazarPromotor(); //Probado
+                case 10: rechazarPromotor(); //Probado	
                 break;
+                case 11:
+                    verLogSistema();
+                    break;
+
+                case 12:
+                    eliminarOfertaReventa();
+                    break;
+
                 case 0 : System.out.println("Saliendo del sistema de administración...");
                 salir();
                 break;
@@ -229,6 +240,51 @@ public class SistemaAdministrador extends SubSistema {
     		}
     	}while(datosCorrectos == false);	
     }
+    private void verLogSistema() {
+        System.out.println("\n=== LOG DEL SISTEMA ===");
+        Administrador admin = (Administrador) usuario;
+
+        admin.consultarLog(); 
+    }
+    private void eliminarOfertaReventa() {
+        System.out.println("\n=== ELIMINAR OFERTA DEL MARKETPLACE ===");
+
+        Administrador admin = (Administrador) usuario;
+
+        // Listar ofertas activas
+        List<OfertaReventa> activas = repoOfertas.obtenerActivas();
+        if (activas.isEmpty()) {
+            System.out.println("No hay ofertas activas en este momento.");
+            return;
+        }
+
+        for (int i = 0; i < activas.size(); i++) {
+            OfertaReventa o = activas.get(i);
+            System.out.println((i + 1) + ". ID: " + o.getId()
+                    + " | Tiquete: " + o.getTiquete().getId()
+                    + " | Precio: " + o.getPrecio()
+                    + " | Vendedor: " + o.getVendedor().getLogin());
+        }
+
+        System.out.print("Seleccione la oferta a eliminar: ");
+        int opcion = sc.nextInt();
+        sc.nextLine();
+
+        if (opcion < 1 || opcion > activas.size()) {
+            System.out.println("Opción inválida.");
+            return;
+        }
+
+        OfertaReventa oferta = activas.get(opcion - 1);
+
+        try {
+            admin.eliminarOfertaReventa(oferta, repoOfertas);
+            System.out.println("Oferta eliminada correctamente.");
+        } catch (Exception e) {
+            System.out.println("Error al eliminar: " + e.getMessage());
+        }
+    }
+
 
 	@Override
 	public void salir() {

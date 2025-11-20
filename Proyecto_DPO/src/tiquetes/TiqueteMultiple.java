@@ -12,20 +12,24 @@ public abstract class TiqueteMultiple extends Tiquete {
     private static int contadorIds = 1;
 
     protected List<TiqueteIndividual> tiquetesIncluidos;
-
     public TiqueteMultiple() {
-    	super();
+        super();
     }
-    public TiqueteMultiple(List<TiqueteIndividual> tiquetes,double precioBasePaquete,double porcentajeServicio,double cobroEmision) {
-        if (tiquetes == null || tiquetes.isEmpty()) {
-            throw new IllegalArgumentException("El paquete debe tener al menos un tiquete");
+
+
+    public TiqueteMultiple(Evento eventoReferencia,List<TiqueteIndividual> tiquetes,Usuario comprador) {
+
+        if (eventoReferencia == null) {
+            throw new IllegalArgumentException("El evento de referencia no puede ser null");
         }
+        if (tiquetes == null || tiquetes.isEmpty()) {
+            throw new IllegalArgumentException("Debe incluir al menos un tiquete individual");
+        }
+
         this.id = "TM-" + contadorIds++;
+        this.evento = eventoReferencia;
         this.tiquetesIncluidos = new ArrayList<>(tiquetes);
-        this.precioBase = precioBasePaquete;
-        this.porcentajeServicio = porcentajeServicio;
-        this.cobroEmision = cobroEmision;
-        this.evento = tiquetes.get(0).getEvento();
+        this.duenoActual = comprador;
     }
 
     public List<TiqueteIndividual> getTiquetesIncluidos() {
@@ -33,17 +37,24 @@ public abstract class TiqueteMultiple extends Tiquete {
     }
 
     @Override
-    public Evento getEvento() {
-        return evento;
+    public double getPrecioTotal() {
+        double total = 0;
+        for (TiqueteIndividual t : tiquetesIncluidos) {
+            total += t.getPrecioTotal();
+        }
+        return total;
     }
 
-    public void transferirPaqueteA(Usuario nuevoDueno) {
-        if (!transferible) {
-            throw new IllegalStateException("Este paquete no es transferible");
+    public void reembolsar() {
+        if (reembolsado) {
+            return;
         }
-        this.duenoActual = nuevoDueno;
+
         for (TiqueteIndividual t : tiquetesIncluidos) {
-            t.setDuenoActual(nuevoDueno);
+            t.reembolsar();
         }
+
+        this.reembolsado = true;
+        this.duenoActual = null;
     }
 }

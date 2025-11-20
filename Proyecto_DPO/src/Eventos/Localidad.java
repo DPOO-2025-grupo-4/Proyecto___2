@@ -48,7 +48,7 @@ public class Localidad {
 		List<Tiquete> lista3 = getTiquetesDisponibles();
 		for(Tiquete t: lista3) {
 			t.setDescuento(oferta.getPorcentajeDescuento());
-			t.setPrecioTotal();
+			t.setPrecioTotal(precio);
 		}
 	}
 	public void reservar(Tiquete tiquete) {
@@ -98,7 +98,7 @@ public class Localidad {
 	public void agregarTiquetes(){
 		
 		for(int i = 0; i < capacidad; i++) {
-			TiqueteIndividual nuevo = new TiqueteIndividual(eventoAsociado, this, eventoAsociado.getPorcentajeServicio(), eventoAsociado.getCobroEmision());
+			TiqueteIndividual nuevo = new TiqueteIndividual(eventoAsociado, this);
 			disponibles.put(nuevo.getId(), nuevo);
 		}
 	}
@@ -107,7 +107,7 @@ public class Localidad {
 	}
 	public void agregarTiquetes(int asientoXFila) {//segun el asiento x fila generar todos los asientos hasta llegar a una capacidad maxima y añadirlos todos en asientos disponibles
 		for(int i = 0; i < capacidad; i++) {
-			TiqueteIndividual nuevo = new TiqueteIndividual(eventoAsociado, this, eventoAsociado.getPorcentajeServicio(), eventoAsociado.getCobroEmision());
+			TiqueteIndividual nuevo = new TiqueteIndividual(eventoAsociado, this);
 			nuevo.setAsiento(""+ fila + numAsiento);
 			disponibles.put(nuevo.getId(), nuevo);
 			numAsiento++;

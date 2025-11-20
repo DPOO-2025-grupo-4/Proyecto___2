@@ -65,85 +65,101 @@ public class sistemaPrincipal {
 		
 	}
 	public void registrarUsuario() {
-		boolean datosCorrectos = false;
-		String tipo = null;
-		System.out.println("Registro de usuario");
-		System.out.println("Seleccione el tipo de usuario"); 
-		System.out.println("1. Administrador");
-        System.out.println("2. Promotor");
-        System.out.println("3. Cliente");
-        int opcion= sc.nextInt();
-        sc.nextLine();
-        switch (opcion) {
-        case 1 : tipo = "ADMINISTRADOR";
-        break;
-        case 2 : tipo = "PROMOTOR";
-        break;
-        case 3 : tipo = "CLIENTE";
-        break;
-        default : System.out.println("Opción inválida.");
-        }
-		while(datosCorrectos == false) {
-			if(tipo.equals("ADMINISTRADOR")) {
-				System.out.print("Nombre: "); 
-				String nombre = sc.nextLine();
-		        System.out.print("Email: "); 
-		        String email = sc.nextLine();
-		        System.out.print("Login: "); 
-		        String login = sc.nextLine();
-		        System.out.print("Password: "); 
-		        String password = sc.nextLine();
-		        if(email.contains("@") && repu.getUsuario(login) == null) {
-		        	datosCorrectos = true;
-		        	Usuario admin = new Administrador(nombre, email,login,password);
-		        	repu.agregarUsuario(admin);
-		        	usuarioActual = admin;
-		        	subSistema = new SistemaAdministrador((Administrador) usuarioActual, repu, repv, repe, repp, ids);
-		        }
-		        else {
-		        	System.out.println("Datos incorrectos, intente de nuevo");
-		        	subSistema.mostrarMenu();
-		        }
-			}
-			else if(tipo.equals("PROMOTOR")) {
-				System.out.println("Nombre: "); String nombre = sc.nextLine();
-		        System.out.println("Email: "); String email = sc.nextLine();
-		        System.out.println("Login: "); String login = sc.nextLine();
-		        System.out.println("Password: "); String password = sc.nextLine();
-		        System.out.println("NIT: "); String nit = sc.nextLine();
-		        if(email.contains("@") && repu.getUsuario(login) == null) {
-		        	datosCorrectos = true;
-		        	Usuario promo = new Promotor(nombre, email,login,password,0,nit);
-		        	repp.agregarPropuestapromotor((Promotor) promo);
-		        	usuarioActual = promo;
-		        	System.out.print("El usuario ya quedo agregado, espera a que un administrador te acepte");
-		        	salir();
-		        }
-		        else {
-		        	System.out.println("Datos incorrectos, intente de nuevo");
-		        }
-			}
-			else if(tipo.equals("CLIENTE")) {
-				System.out.println("Nombre: "); String nombre = sc.nextLine();
-		        System.out.println("Email: "); String email = sc.nextLine();
-		        System.out.println("Login: "); String login = sc.nextLine();
-		        System.out.println("Password: "); String password = sc.nextLine();
-		        System.out.println("Documento: "); String doc = sc.nextLine();
-		        System.out.println("Telefono: "); String telefono = sc.nextLine();
-		        if(email.contains("@") && repu.getUsuario(login) == null) {
-		        	datosCorrectos = true;
-		        	Usuario cliente = new Cliente(nombre, email,login,password, doc, telefono);
-		        	repu.agregarUsuario(cliente);
-		        	usuarioActual = cliente;
-		        	subSistema = new SistemaCliente((Cliente) usuarioActual, repe, ids);
-		        	subSistema.mostrarMenu();
-		        }
-		        else {
-		        	System.out.println("Datos incorrectos, intente de nuevo");
-		        }
-			}
-		}
+	    boolean datosCorrectos = false;
+	    String tipo = null;
+	    System.out.println("Registro de usuario");
+	    System.out.println("Seleccione el tipo de usuario");
+	    System.out.println("1. Administrador");
+	    System.out.println("2. Promotor");
+	    System.out.println("3. Cliente");
+	    int opcion = sc.nextInt();
+	    sc.nextLine();
+	    switch (opcion) {
+	        case 1: tipo = "ADMINISTRADOR"; break;
+	        case 2: tipo = "PROMOTOR"; break;
+	        case 3: tipo = "CLIENTE"; break;
+	        default:
+	            System.out.println("Opción inválida.");
+	            return; // salimos si la opción no sirve
+	    }
+
+	    while (!datosCorrectos) {
+
+	        if (tipo.equals("ADMINISTRADOR")) {
+	            System.out.print("Nombre: ");
+	            String nombre = sc.nextLine();
+	            System.out.print("Email: ");
+	            String email = sc.nextLine();
+	            System.out.print("Login: ");
+	            String login = sc.nextLine();
+	            System.out.print("Password: ");
+	            String password = sc.nextLine();
+
+	            if (email.contains("@") && repu.getUsuario(login) == null) {
+	                datosCorrectos = true;
+	                Usuario admin = new Administrador(nombre, email, login, password);
+	                repu.agregarUsuario(admin);
+	                usuarioActual = admin;
+	                subSistema = new SistemaAdministrador((Administrador) usuarioActual, repu, repv, repe, repp, ids);
+
+	                subSistema.mostrarMenu();
+	            } else {
+	                System.out.println("Datos incorrectos, intente de nuevo");
+	            }
+	        }
+
+	        else if (tipo.equals("PROMOTOR")) {
+	            System.out.print("Nombre: ");
+	            String nombre = sc.nextLine();
+	            System.out.print("Email: ");
+	            String email = sc.nextLine();
+	            System.out.print("Login: ");
+	            String login = sc.nextLine();
+	            System.out.print("Password: ");
+	            String password = sc.nextLine();
+	            System.out.print("NIT: ");
+	            String nit = sc.nextLine();
+
+	            if (email.contains("@") && repu.getUsuario(login) == null) {
+	                datosCorrectos = true;
+	                Usuario promo = new Promotor(nombre, email, login, password, 0, nit);
+	                repp.agregarPropuestapromotor((Promotor) promo);
+	                usuarioActual = promo;
+	                System.out.println("El usuario ya quedó agregado, espera a que un administrador te acepte");
+	                salir();
+	            } else {
+	                System.out.println("Datos incorrectos, intente de nuevo");
+	            }
+	        }
+
+	        else if (tipo.equals("CLIENTE")) {
+	            System.out.print("Nombre: ");
+	            String nombre = sc.nextLine();
+	            System.out.print("Email: ");
+	            String email = sc.nextLine();
+	            System.out.print("Login: ");
+	            String login = sc.nextLine();
+	            System.out.print("Password: ");
+	            String password = sc.nextLine();
+	            System.out.print("Documento: ");
+	            String doc = sc.nextLine();
+	            System.out.print("Telefono: ");
+	            String telefono = sc.nextLine();
+
+	            if (email.contains("@") && repu.getUsuario(login) == null) {
+	                datosCorrectos = true;
+	                Usuario cliente = new Cliente(nombre, email, login, password, doc, telefono);
+	                repu.agregarUsuario(cliente);
+	                usuarioActual = cliente;
+	                subSistema = new SistemaCliente((Cliente) usuarioActual, repe, ids);
+	                subSistema.mostrarMenu();
+	            } else {
+	                System.out.println("Datos incorrectos, intente de nuevo");
+	            }
+	        }
+	    }
 	}
+
 	public void loguearUsuario() {
 		boolean datosCorrectos = false;
 		while(datosCorrectos == false) {
@@ -184,7 +200,7 @@ public class sistemaPrincipal {
 		repv.guardar();
 		repe.guardar();
 		repp.guardar();
-		ids.finalizarIDs(); //Chambonada para mantener id persistido
+		ids.finalizarIDs(); 
 		ids.guardar();
 		
 	}
